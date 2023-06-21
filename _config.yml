@@ -26,8 +26,14 @@ baseurl: "/" # the subpath of your site, e.g. /blog
 url: "https://jwplatta.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: jwplatta
 github_username:  jwplatta
+linkedin_username: jwplatta
+
+mathjax: true
 
 # Build settings
+markdown: kramdown
+kramdown:
+  math_engine: mathjax
 theme: minima
 plugins:
   - jekyll-feed
