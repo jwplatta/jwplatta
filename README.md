@@ -1,3 +1,3 @@
-# Joe Platta Blog
+# Improper Learning Blog
 
 Nothing important here.
