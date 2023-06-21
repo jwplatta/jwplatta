@@ -5,6 +5,8 @@ date:   2023-06-19 10:59:39 -0500
 categories: machine-learning reinforcement-learning
 ---
 
+## Overview
+
 Reinforcement learning algorithms like Q-learning typically find an optimal policy for some Markov decision process by storing and updating a table of values used to map states to optimal actions[^3]. The most interesting MDPs require large or even infinite state-action spaces. It's intractable in these cases to enumerate and store the entire state-action space in a table. Moreover, many states in a large state-action space are similar and map to the same optimal action. One approach to handling these large spaces is to generalize the state-action space[^1]. A generalization of the state-action space condenses the amount of information needed to learn an optimal policy for the MDP.
 
 {:refdef: style="text-align: center;"}
@@ -12,6 +14,8 @@ Reinforcement learning algorithms like Q-learning typically find an optimal poli
 {: refdef}
 
 I use the Atari game Centipede to illustrate one approach to generalizing a large state space[^2][^4]. The observations in the RGB environment of Centipede are arrays with a shape of $$210 \text{ x } 160 \text{ x } 3$$ where each element takes on one of $$256$$ distinct values. This setup gives $$256^{210 \cdot 160 \cdot 3} \approx 3.877 \cdot 10^{242751}$$ possible distinct observations! We can reduce this massive number by switching to the RAM environment. Now each observation is a one dimensional array of size $$128$$ where each element has one of $$256$$ distinct values. Still, even using the RAM environment, there are $$256^{128} \approx 1.798 \text{ x } 10^{309}$$ possible observations. Constraints of time and space prohibit simply mapping each observation to an action. We need a more condensed representation of the state space. So instead we can develop a generalization of the observations from the RAM environment. Applying Q-learning to this generalization we find a policy that outperforms policies found using larger or random representations of the state space.
+
+## Design
 
 There are many approaches to generalizing the state-action space[^1]. We could generalize the entire state-action space. For example, deep Q-learning represents the Q-function with a neural network instead of a table. This representation enables learning an approximation of the entire state-action space using backpropagation. Alternatively, we can generalize the action space (agent's output) or the state space (agent's input). Here I choose to build a generalization over the state space.
 
@@ -31,6 +35,8 @@ Generalizations of the state space sometimes need to combine supervised and unsu
 
 [![](https://mermaid.ink/img/pako:eNqNU9FuwiAU_RXCU006Y1trlUSftqdFX3xbmhiEq7K00AFd5oz_Pizaxdpk6xOce87h3lM4YaY4YIINfNQgGTwLute0zCVyHysESPu0WKwttbCkFUHbWhQ8MJf9xtCyKsCESG5YURsL2szj0cBrKbPi07HQTevh286Zvi6BSkPQTtigx6rr4-ke9Ounu86uOsRcy07uiRx69W0XzsEPSVoMqe07MIseDO4H6cmm0sAFs4HaGtBOIpT8dxgroBqMXYHYH7ZKN6lsegwvCckraR517TsuvtoB3cy_LUtfc60rq2x1FIwWqPm7KLgPdPCQR-9hfck2fn_Emctc4hCXoEsquLuQpwueY3uAEnJM3JLDjtaFzXEuz45Ka6vWR8kwsbqGENcVd4bX-4vJjhamRV-4sEq3YEXlm1LlTQlNdekfQvMeGgomJ_yFSZxmw-k0zeJpHCezOBmH-OjQaDpMk2yUROkkSqNJPD6H-LsxHQ0noyxKk7ErZbNZEk3OP-wfJM0?type=png)](https://mermaid-js.github.io/mermaid-live-editor/edit#pako:eNqNU9FuwiAU_RXCU006Y1trlUSftqdFX3xbmhiEq7K00AFd5oz_Pizaxdpk6xOce87h3lM4YaY4YIINfNQgGTwLute0zCVyHysESPu0WKwttbCkFUHbWhQ8MJf9xtCyKsCESG5YURsL2szj0cBrKbPi07HQTevh286Zvi6BSkPQTtigx6rr4-ke9Ounu86uOsRcy07uiRx69W0XzsEPSVoMqe07MIseDO4H6cmm0sAFs4HaGtBOIpT8dxgroBqMXYHYH7ZKN6lsegwvCckraR517TsuvtoB3cy_LUtfc60rq2x1FIwWqPm7KLgPdPCQR-9hfck2fn_Emctc4hCXoEsquLuQpwueY3uAEnJM3JLDjtaFzXEuz45Ka6vWR8kwsbqGENcVd4bX-4vJjhamRV-4sEq3YEXlm1LlTQlNdekfQvMeGgomJ_yFSZxmw-k0zeJpHCezOBmH-OjQaDpMk2yUROkkSqNJPD6H-LsxHQ0noyxKk7ErZbNZEk3OP-wfJM0)
 
+## Results
+
 TODO: summarize results
 
 {:refdef: style="text-align: center;"}
@@ -40,6 +46,8 @@ TODO: summarize results
 {:refdef: style="text-align: center;"}
 ![max_min_scores_steps](/assets/images/post-2023-06-19/max_min_scores_steps.png){:style="text-align: center"}
 {: refdef}
+
+## Summary
 
 The code for the experiments can be found on [github](https://github.com/jwplatta/centipede).
 
