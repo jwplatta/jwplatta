@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+  <title>Joe Platta | Write an awesome description for your new site here.</title>
+  <meta name="generator" content="Jekyll v4.3.2" />
+  <meta property="og:title" content="Joe Platta" />
+  <meta property="og:locale" content="en_US" />
+  <meta name="description" content="Write an awesome description for your new site here." />
+  <meta property="og:description" content="Write an awesome description for your new site here." />
+  <link rel="canonical" href="http://localhost:4000/" />
+  <meta property="og:url" content="http://localhost:4000/" />
+  <meta property="og:site_name" content="Joe Platta" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="twitter:title" content="Joe Platta" />
+  <script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","description":"Write an awesome description for your new site here.","headline":"Joe Platta","name":"Joe Platta","url":"http://localhost:4000/"}</script>
+  <!-- End Jekyll SEO tag -->
+  <link rel="stylesheet" href="/assets/main.css">
+  <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Joe Platta" />
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+
+<body>
+  <header class="site-header" role="banner">
+    <div class="wrapper"><a class="site-title" rel="author" href="/">Improper Learning</a>
+      {% include navigation.html %}
+    </div>
+  </header>
+  <main class="page-content" aria-label="Content">
+    <div class="wrapper">
+      <h1>{{ page.title }}</h1>
+      <p>{{ page.date | date_to_string }}</p>
+
+      <div class="home">
+        {{content}}
+        <!-- <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p> -->
+      </div>
+    </div>
+  </main>
+  {% include footer.html %}
+</body>
+
+</html>
