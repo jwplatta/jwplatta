@@ -37,7 +37,9 @@ Generalizations of the state space sometimes need to combine supervised and unsu
 
 ## Results
 
-TODO: summarize results
+In order to see how state generalization improves Q-learning, consider 5 different learners each trained on a different representation of the state space for 5 runs of 1000 episodes. The results are in the bar graphs. The learner trained on the entire state sample set performs worst. The large state space makes it difficult for the learner to find an optimal policy given the training constraints. The learners trained on a random sampling of states from the sample set performed slightly better. These learners find optimal actions for the sample states, but those states don't capture many important properties of the Centipede environment. So, finally, the learners trained using the state generalization based on the clustering far outperform the other learners.
+
+There's also some interesting differences in the performance of the agent using the 20 cluster generalization versus the agent using the 200 cluster generalization. The 20 cluster agent achieves the highest average and max scores. So, even when accounting for a relatively few number of states, generalizing the state space significantly improves the performance of the agent. Also, given that part of the objective of Centipede is to survive, the longer episodes of the 20-clusters agent suggests it learned a better policy for evading threats. The 200 cluster, however, achieved the highest minimum score. The more granular generalization helped the agent identify more scoring opportunities than 20 cluster agent.
 
 {:refdef: style="text-align: center;"}
 ![mean_scores_and_steps](/assets/images/post-2023-06-19/mean_scores_and_steps.png){:style="text-align: center"}
@@ -47,7 +49,9 @@ TODO: summarize results
 ![max_min_scores_steps](/assets/images/post-2023-06-19/max_min_scores_steps.png){:style="text-align: center"}
 {: refdef}
 
-## Summary
+## Conclusion
+
+The approach to state generalization described here is simple and straightforward. There's many ways we could make it more sophisticated. One possibility would to tune k-means clustering against a metric like the silhouette score to find an optimal number of prototypical states. Another possibility is that slight, important variations among states require the agent to react differently. We could account for this by using k-nearest neighbors with more than one neighbor. One more possibility is to use dimensionality reduction techniques such as principal components analysis to identify the most significant features of the state space before clustering. Still, the principle demonstrated by the above results remains the same. We can turn MDPs with large or infinite state-action spaces into tractable problems for learners by finding a decent generalization of the state-action space.
 
 The code for the experiments can be found on [github](https://github.com/jwplatta/centipede).
 
