@@ -1,3 +1,3 @@
-# Improper Learning Blog
+# jwplatta
 
 Nothing important here.
