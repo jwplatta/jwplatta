@@ -13,9 +13,11 @@ Since this task is so fundamental to using language, the capacity for NLP system
 
 ## Model Design
 
-Training the Naive Bayes classifier requires vectorizing the sentence pairs, i.e. turning the text into a vector real numbers. A commonly used method of vectorizing text for classification tasks is TF-IDF (term frequency-inverse document frequency). TF-IDF is better than using a straightforward bag-of-words, i.e. word frequency, because the combination of the word frequency and its inverse frequency across all documents allows TF-IDF to identify those words that best discriminate amongst the documents. The underlying assumption of the Naive Bayes model is that each pair of words in the TF-IDF vectorization is conditionally independent given the inferential relationship.  Although this assumption may oversimplify the textual entailment task, the model is a good benchmark to compare OpenAI and the neural network agaisnt. I only kept the most significant 2000 features identified by the TF-IDF. Limiting the feature set helps reduce noise and emphasizes the most important features.
+Training the Naive Bayes classifier requires vectorizing the sentence pairs, i.e. turning the text into a vector real numbers. A commonly used method of vectorizing text for classification tasks is TF-IDF (term frequency-inverse document frequency). TF-IDF is better than using a straightforward bag-of-words, i.e. word frequency, because the combination of the word frequency and its inverse frequency across all documents allows TF-IDF to identify those words that best discriminate amongst the documents.
 
-The neural network model is more complex. It consists of an input layer, one hidden layer, and an output layer, each separated by a Rectified Linear Unit (ReLU) activation function.
+The underlying assumption of the Naive Bayes model is that each pair of words in the TF-IDF vectorization is conditionally independent given the inferential relationship.  Although this assumption may oversimplify the textual entailment task, the model is a good benchmark to compare OpenAI and the neural network agaisnt. I only kept the most significant 2000 features identified by the TF-IDF. Limiting the feature set helps reduce noise and emphasizes the most important features.
+
+The neural network model is more complex. It consists of an input layer, one hidden layer, and an output layer, each separated by a Rectified Linear Unit (ReLU) activation function:
 ```python
 self.module_list = [
 	nn.Linear(768, 50),
@@ -26,7 +28,9 @@ self.module_list = [
 ]
 ```
 
-I used the BERT model to generate word embeddings for vectorizing the text for the neural network. Preprocessing the text had several steps. First, the text is tokenized, i.e. broken into an array of subwords for the BERT model. Next, token type IDs are created to differentiate between the two sentences. Then, I retrieved the token IDs, or unique identifiers, from the BERT model's vocabulary to numerically represent the text. Finally, an attention mask is created to indicate which tokens the model should focus on. Also, sequences longer than the specified maximum length of 128 were truncated, while shorter sequences were padded with zeros.
+I used the BERT model to generate word embeddings for vectorizing the text for the neural network.
+
+Preprocessing the text had several steps. First, the text is tokenized, i.e. broken into an array of subwords for the BERT model. Next, token type IDs are created to differentiate between the two sentences. Then, I retrieved the token IDs, or unique identifiers, from the BERT model's vocabulary to numerically represent the text. Finally, an attention mask is created to indicate which tokens the model should focus on. Also, sequences longer than the specified maximum length of 128 were truncated, while shorter sequences were padded with zeros.
 
 Here is an example preprocessing a sentence pair from the training dataset:
 ```
@@ -70,7 +74,15 @@ Label:
 
 ## Results
 
-The neural network model had the highest accuracy and outperformed the Naive Bayes classifier and the `text-davinci-002` model on most metrics with a few interesting exceptions. This outcome makes sense given a couple inherent disadvantages of the other models. The Naive Bayes classifier relies on the assumption of conditional independence among features. This assumption oversimplifies the contextual information within each sentence pair by disregarding word relationships. The `text-davinci-002` model does not make this assumption because of the self-attention layers in its transformer architecture. These self-attention layers enable the model to consider word context and relationships of words across the sequence of words. However, unlike the neural network, the `text-davinci-002` model was not trained on the SNLI dataset and did not have the opportunity to make weight updates to directly model the patterns within the data. Rather, it was simply used for inference by feeding it the prompt with the sentence pair. The simple neural network, on the other hand, was trained on the SNLI dataset using the BERT-generated embeddings as features. This enabled the neural network to directly learn the intricate relationships among words in the sentence pairs.
+The neural network model had the highest accuracy and outperformed the Naive Bayes classifier and the `text-davinci-002` model on most metrics with a few interesting exceptions. This outcome makes sense given a couple inherent disadvantages of the other models.
+
+The Naive Bayes classifier relies on the assumption of conditional independence among features. This assumption oversimplifies the contextual information within each sentence pair by disregarding word relationships.
+
+The `text-davinci-002` model does not make the same assumption because of the self-attention layers in its transformer architecture. These self-attention layers enable the model to consider word context and relationships of words across the sequence of words.
+
+However, unlike the neural network, the `text-davinci-002` model was not trained on the SNLI dataset and did not have the opportunity to make weight updates to directly model the patterns within the data. Rather, it was simply used for inference by feeding it the prompt with the sentence pair.
+
+The simple neural network, on the other hand, was trained on the SNLI dataset using the BERT-generated embeddings as features. This enabled the neural network to directly learn the intricate relationships among words in the sentence pairs.
 
 |                  | Davinci |        |          | NN |        |          | NBayes  |        |          |         |
 | ---------------- | ---------------- | ------ | -------- | -------------- | ------ | -------- | ------------ | ------ | -------- | ------- |
@@ -82,7 +94,11 @@ The neural network model had the highest accuracy and outperformed the Naive Bay
 | macro avg        | 0.62             | 0.55   | 0.55     | 0.73           | 0.72   | 0.72     | 0.5          | 0.5    | 0.5      | 9824    |
 | wghtd avg     | 0.62             | 0.55   | 0.55     | 0.73           | 0.72   | 0.72     | 0.5          | 0.5    | 0.5      | 9824    |
 
-The Naive Bayes classifier scored an accuracy of 50% on the test dataset. This result isn't impressive, but beats a random classifier. A more interesting observation is the fact that it performs similarly on each the entailment labels. This result is due to the lack context modeling in the feature set generated by the TF-IDF scores. The `text-davinci-002` scored a slightly higher accuracy of 55%, but its performance on each of the labels is much less balanced than the Naive Bayes classifier. The model scored very high accuracy when identifying positive instances of contradiction samples and outperformed the other models at identifying all the positive instances of entailment. However, the model struggled with neutral samples. Overall, the `text-davinci-002` model was extremely precise about labeling samples as contradictory while somewhat liberal in labeling samples as entailment. Finally, the simple neural network scored the highest accuracy at 72%. The model's F1 scores show that neural network, with relatively little tuning, learned best how to correctly identify samples of each of the entailment types.
+The Naive Bayes classifier scored an accuracy of 50% on the test dataset. This result isn't impressive, but beats a random classifier. A more interesting observation is the fact that it performs similarly on each the entailment labels. This result is due to the lack context modeling in the feature set generated by the TF-IDF scores.
+
+The `text-davinci-002` scored a slightly higher accuracy of 55%, but its performance on each of the labels is much less balanced than the Naive Bayes classifier. The model scored very high accuracy when identifying positive instances of contradiction samples and outperformed the other models at identifying all the positive instances of entailment. However, the model struggled with neutral samples. Overall, the `text-davinci-002` model was extremely precise about labeling samples as contradictory while somewhat liberal in labeling samples as entailment.
+
+Finally, the simple neural network scored the highest accuracy at 72%. The model's F1 scores show that neural network, with relatively little tuning, learned best how to correctly identify samples of each of the entailment types.
 
 <!-- {:refdef: style="text-align: center;"} -->
 ![confusion_matrices](/assets/images/post-2023-07-15/confusion_matrices.png){:style="text-align: center;"}
